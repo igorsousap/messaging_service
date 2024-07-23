@@ -12,7 +12,7 @@ defmodule Persistence.Webhooks.Webhook do
           user_id: Ecto.UUID.t()
         }
 
-  @fields ~w(endpoint event_type)a
+  @fields ~w(endpoint event_type user_id)a
 
   @primary_key {:id, Ecto.UUID, autogenerate: true}
 
@@ -20,7 +20,7 @@ defmodule Persistence.Webhooks.Webhook do
     field :endpoint, :string
     field :event_type, :string
 
-    belongs_to :user, MessagingService.Persistence.Accounts.User
+    belongs_to :user, MessagingService.Persistence.Accounts.User, type: :binary_id
 
     timestamps()
   end
