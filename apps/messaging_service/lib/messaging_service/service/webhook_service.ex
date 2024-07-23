@@ -13,15 +13,15 @@ defmodule MessagingService.Service.WebhookService do
         })
 
   """
-  @spec create_webhook(map()) :: {:ok, :created} | {:error, Ecto.Changeset.t()}
+  @spec create_webhook(map()) :: {:ok, Webhook.t()} | {:error, Ecto.Changeset.t()}
   def create_webhook(params) do
     case Webhooks.create(params) do
       {:ok, webhook} ->
         Logger.info(
-          "webhook with id: #{webhook.id} and event: #{webhook} was created for user: #{webhook.user_id}"
+          "webhook with id: #{webhook.id} and event: #{webhook.event_type} was created for user: #{webhook.user_id}"
         )
 
-        {:ok, :created}
+        {:ok, webhook}
 
       error ->
         error
@@ -37,17 +37,26 @@ defmodule MessagingService.Service.WebhookService do
 
   """
   def get_webhook_from_user(user_id, page, page_size) do
+    page = String.to_integer(page)
+    page_size = String.to_integer(page_size)
+
     case Webhooks.get_webhook_by_user_id(user_id, page, page_size) do
       [] ->
         Logger.info("Webhooks from user: #{user_id} not found")
         {:error, :not_found}
 
       webhook ->
-        Logger.info(
-          "webhook with id: #{webhook.id} and event: #{webhook} was created for user: #{webhook.user_id}"
-        )
+        {:ok, webhook}
+    end
+  end
 
-        {:ok, :created}
+  def update_webhook(id, endpoint) do
+    case Webhooks.update(id, %{endpoint: endpoint}) do
+      {:ok, webhook} ->
+        {:ok, webhook}
+
+      error ->
+        error
     end
   end
 end

@@ -39,7 +39,8 @@ defmodule MessagingService.Persistence.Accounts do
 
   """
   def get_user_by_email_and_password(email, password)
-      when is_binary(email) and is_binary(password) do
+      when is_binary(email) and
+             is_binary(password) do
     user = Repo.get_by(User, email: email)
     if User.valid_password?(user, password), do: user
   end
@@ -58,7 +59,11 @@ defmodule MessagingService.Persistence.Accounts do
       ** (Ecto.NoResultsError)
 
   """
-  def get_user!(id), do: Repo.get!(User, id)
+  def get_user!(id), do: Repo.get(User, id)
+
+  def list_users do
+    Repo.all(User)
+  end
 
   ## User registration
 
@@ -227,6 +232,15 @@ defmodule MessagingService.Persistence.Accounts do
   end
 
   @doc """
+  insert a session token.
+  """
+  def insert_user_session_token(user, token) do
+    {_token, user_token} = UserToken.insert_session_token(user, token)
+    Repo.insert!(user_token)
+    :ok
+  end
+
+  @doc """
   Gets the user with the given signed token.
   """
   def get_user_by_session_token(token) do
@@ -237,8 +251,8 @@ defmodule MessagingService.Persistence.Accounts do
   @doc """
   Deletes the signed token with the given context.
   """
-  def delete_user_session_token(token) do
-    Repo.delete_all(UserToken.by_token_and_context_query(token, "session"))
+  def delete_user_session_token(user_id) do
+    Repo.delete_all(UserToken.by_user_id_and_context_query(user_id, "session"))
     :ok
   end
 
@@ -348,6 +362,15 @@ defmodule MessagingService.Persistence.Accounts do
     |> case do
       {:ok, %{user: user}} -> {:ok, user}
       {:error, :user, changeset, _} -> {:error, changeset}
+    end
+  end
+
+  def validate_token_user(token) do
+    {:ok, query} = UserToken.verify_session_token_query(token)
+
+    case Repo.one(query) do
+      nil -> nil
+      user_token -> {:ok, user_token}
     end
   end
 end

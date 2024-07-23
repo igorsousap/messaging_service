@@ -23,6 +23,7 @@ defmodule MessagingService.Persistence.Webhooks do
   def create(params) do
     params
     |> Webhook.changeset()
+    |> IO.inspect(label: :changeset)
     |> Repo.insert()
   end
 
@@ -66,8 +67,9 @@ defmodule MessagingService.Persistence.Webhooks do
 
   """
   @spec update(Webhook.t(), map()) :: {:ok, Webhook.t()} | {:error, Ecto.Changeset.t()}
-  def update(webhook, attrs) do
-    webhook
+  def update(id, attrs) do
+    Webhook
+    |> Repo.get(id)
     |> Webhook.changeset(attrs)
     |> Repo.update()
   end
