@@ -23,7 +23,6 @@ defmodule MessagingService.Persistence.Webhooks do
   def create(params) do
     params
     |> Webhook.changeset()
-    |> IO.inspect(label: :changeset)
     |> Repo.insert()
   end
 
