@@ -59,7 +59,7 @@ defmodule MessagingServiceWeb.WebhookController do
     token = conn.private[:guardian_default_token]
 
     with {:ok, webhook} <-
-           WebhookService.update_webhook(params["id"], params["endpoint"]),
+           WebhookService.update_webhook_endpoint(params["id"], params["endpoint"]),
          {:ok, :authorized} <- UserService.validate_token(token) do
       conn
       |> put_status(:ok)

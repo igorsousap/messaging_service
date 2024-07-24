@@ -14,7 +14,7 @@ defmodule MessagingServiceWeb.UserController do
     with {:ok, user} <-
            UserService.create_user(%{email: params["email"], password: params["password"]}),
          {:ok, token, _full_claims} <- Guardian.encode_and_sign(%{id: user.id}) do
-      UserService.generate_token_user(user, token)
+      UserService.generate_token_user(user.id, token)
 
       conn
       |> put_status(:created)
@@ -33,7 +33,7 @@ defmodule MessagingServiceWeb.UserController do
     with {:ok, user} <- UserService.get_user_email_password(params["email"], params["password"]),
          :ok <- UserService.delete_previews_token(user.id),
          {:ok, token, _claims} <- Guardian.encode_and_sign(user),
-         :ok <- UserService.generate_token_user(user, token) do
+         :ok <- UserService.generate_token_user(user.id, token) do
       conn
       |> put_status(:ok)
       |> render(:user, loyalt: false, user: user, token: token, status: :log_in)

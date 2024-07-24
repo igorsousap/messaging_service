@@ -13,6 +13,13 @@ defmodule MessagingService.Persistence.Accounts.UserToken do
   @change_email_validity_in_days 7
   @session_validity_in_days 1
 
+  @type t :: %__MODULE__{
+          id: Ecto.UUID.t(),
+          token: String.t(),
+          context: String.t(),
+          sent_to: String.t()
+        }
+
   schema "users_tokens" do
     field :token, :binary
     field :context, :string
