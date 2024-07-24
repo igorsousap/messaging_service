@@ -134,8 +134,8 @@ defmodule MessagingService.Service.UserService do
           {:ok, :authorized} | {:error, :unathourazed}
   def validate_token(token) do
     case Accounts.validate_token_user(token) do
-      {:ok, _user_token} -> {:ok, :authorized}
       nil -> {:error, :unathourazed}
+      _user_token -> {:ok, :authorized}
     end
   end
 end
