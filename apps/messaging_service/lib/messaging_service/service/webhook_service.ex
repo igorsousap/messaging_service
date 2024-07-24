@@ -1,17 +1,17 @@
 defmodule MessagingService.Service.WebhookService do
   require Logger
+  alias Persistence.Webhooks.Webhook
   alias MessagingService.Persistence.Webhooks
 
   @doc """
   Receive a webhook to be inserted on database
   ## Examples
 
-      iex> MessagingService.Service.WebhookService.create_webhook(%{
-          event_type: "send.message.converter",
-          endpoint: "https://webhook.site/68d090b2-e5ad-40d3-a990-b3dc45dcf17c"
-          user_id: "user_id"
-        })
+      iex> create_webhook(%{event_type: "send.message.converter",endpoint: "https://webhook.site/68d090b2-e5ad-40d3-a990-b3dc45dcf17c", user_id: "user_id"})
+      {:ok, %Webhook{}}
 
+      iex> create_webhook(%{event_type: "invalid,event",endpoint: "www.invalid.com/endpoint", user_id: "user_id"})
+      {:error, Ecto.Changeset.t()}
   """
   @spec create_webhook(map()) :: {:ok, Webhook.t()} | {:error, Ecto.Changeset.t()}
   def create_webhook(params) do
@@ -24,38 +24,66 @@ defmodule MessagingService.Service.WebhookService do
         {:ok, webhook}
 
       error ->
+        Logger.error(
+          "Could not create webhook with attributes #{inspect(params)}. Error: #{inspect(error)}"
+        )
+
         error
     end
   end
 
   @doc """
-  Receive a webhook to be inserted on database
+  Return a webhook from a given user_id
   ## Examples
 
-      iex> MessagingService.Service.WebhookService.get_webhook_from_user("user_id", "page", "page_size")
-        })
+      iex> get_webhook_from_user("user_id", "page", "page_size")})
+       {:ok, %Webhook{}}
 
+
+      iex> get_webhook_from_user("invalid_user_id", "page", "page_size")})
+       {:error, :not_found}
   """
+  @spec get_webhook_from_user(BInary_id.t(), String.t(), String.t()) ::
+          {:ok, %Webhook{}} | {:error, :not_found}
   def get_webhook_from_user(user_id, page, page_size) do
     page = String.to_integer(page)
     page_size = String.to_integer(page_size)
 
     case Webhooks.get_webhook_by_user_id(user_id, page, page_size) do
       [] ->
-        Logger.info("Webhooks from user: #{user_id} not found")
+        Logger.error("Webhooks from user: #{user_id} not found")
         {:error, :not_found}
 
       webhook ->
+        Logger.info("Requested a list of all webhooks from user: #{user_id}")
         {:ok, webhook}
     end
   end
 
-  def update_webhook(id, endpoint) do
-    case Webhooks.update(id, %{endpoint: endpoint}) do
+  @doc """
+  Update a webhooks endpoint from a given user id
+  ## Examples
+
+      iex> update_webhook_endpoint("user_id", "endpoint"))
+       {:ok, %Webhook{}}
+
+
+      iex> update_webhook_endpoint("invalid_user_id",  endpoint))
+       {:error, Ecto.Changeset.t(
+  """
+  @spec update_webhook_endpoint(Binary_id.t(), String.t()) ::
+          {:ok, Webhook.t()} | {:error, Ecto.Changeset.t()}
+  def update_webhook_endpoint(user_id, endpoint) do
+    case Webhooks.update(user_id, %{endpoint: endpoint}) do
       {:ok, webhook} ->
+        Logger.info("Updated webhook #{webhook.id} to a new endpoint #{endpoint}")
         {:ok, webhook}
 
       error ->
+        Logger.error(
+          "Could not create webhook with attributes #{endpoint}. Error: #{inspect(error)}"
+        )
+
         error
     end
   end
