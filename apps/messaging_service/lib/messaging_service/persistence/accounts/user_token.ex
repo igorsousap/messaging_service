@@ -53,8 +53,8 @@ defmodule MessagingService.Persistence.Accounts.UserToken do
     {token, %UserToken{token: token, context: "session", user_id: user.id}}
   end
 
-  def insert_session_token(user, token) do
-    {token, %UserToken{token: token, context: "session", user_id: user.id}}
+  def insert_session_token(user_id, token) do
+    {token, %UserToken{token: token, context: "session", user_id: user_id}}
   end
 
   @doc """
