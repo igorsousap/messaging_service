@@ -13,5 +13,9 @@ defmodule MessagingService.Repo.Migrations.CreateWebhooksTable do
     end
 
     create unique_index(:webhooks, [:endpoint], name: :webhooks_endpoint_index)
+
+    create unique_index(:webhooks, [:user_id, :event_type],
+             name: :webhooks_user_id_event_type_index
+           )
   end
 end

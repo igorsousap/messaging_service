@@ -12,9 +12,11 @@ defmodule MessagingService.Application do
       {DNSCluster, query: Application.get_env(:messaging_service, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: MessagingService.PubSub},
       # Start the Finch HTTP client for sending emails
-      {Finch, name: MessagingService.Finch}
+      {Finch, name: MessagingService.Finch},
       # Start a worker by calling: MessagingService.Worker.start_link(arg)
       # {MessagingService.Worker, arg}
+      {MessagingService.Consumer.Broadway.BroadwayMessage, []},
+      {Oban, Application.fetch_env!(:messaging_service, Oban)}
     ]
 
     Supervisor.start_link(children, strategy: :one_for_one, name: MessagingService.Supervisor)

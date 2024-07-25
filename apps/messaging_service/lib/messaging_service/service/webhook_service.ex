@@ -43,7 +43,7 @@ defmodule MessagingService.Service.WebhookService do
       iex> get_webhook_from_user("invalid_user_id", "page", "page_size")})
        {:error, :not_found}
   """
-  @spec get_webhook_from_user(BInary_id.t(), String.t(), String.t()) ::
+  @spec get_webhook_from_user(Binary_id.t(), String.t(), String.t()) ::
           {:ok, %Webhook{}} | {:error, :not_found}
   def get_webhook_from_user(user_id, page, page_size) do
     page = String.to_integer(page)
@@ -61,7 +61,32 @@ defmodule MessagingService.Service.WebhookService do
   end
 
   @doc """
-  Update a webhooks endpoint from a given user id
+  Return a webhook from a given user_id and event_type
+  ## Examples
+
+      iex> get_webhook_from_user("user_id", "event_type")})
+       {:ok, %Webhook{}}
+
+
+      iex> get_webhook_from_user("invalid_user_id", "invalid_event_type")})
+       {:error, :not_found}
+  """
+  @spec get_webhook_from_user_id_event_type(Binary_id.t(), String.t()) ::
+          {:ok, %Webhook{}} | {:error, :not_found}
+  def get_webhook_from_user_id_event_type(user_id, event_type) do
+    case Webhooks.get_webhook_by_user_id_event_type(user_id, event_type) do
+      nil ->
+        Logger.error("Webhooks from user: #{user_id} not found")
+        {:error, :not_found}
+
+      webhook ->
+        Logger.info("Requested webhook from user: #{user_id}")
+        {:ok, webhook}
+    end
+  end
+
+  @doc """
+  Update a webhooks endpoint from a given user id and endpoint
   ## Examples
 
       iex> update_webhook_endpoint("user_id", "endpoint"))

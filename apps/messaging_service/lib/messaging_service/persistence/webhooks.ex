@@ -55,6 +55,21 @@ defmodule MessagingService.Persistence.Webhooks do
   end
 
   @doc """
+  Receive a user_id and a event and returns a webhook
+  ## Examples
+
+      iex> MessagingService.Webhooks.get_webhook_by_user_id("UUID")
+
+  """
+  @spec get_webhook_by_user_id_event_type(Ecto.UUID.t(), String.t()) :: Webhook.t() | nil
+  def get_webhook_by_user_id_event_type(user_id, event_type) do
+    Webhook
+    |> from()
+    |> where([w], w.user_id == ^user_id and w.event_type == ^event_type)
+    |> Repo.one()
+  end
+
+  @doc """
   Receive a user_id and returns a webhook
   ## Examples
 

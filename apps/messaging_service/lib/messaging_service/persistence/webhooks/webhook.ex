@@ -42,6 +42,7 @@ defmodule Persistence.Webhooks.Webhook do
     endpoint
     |> cast(params, @fields)
     |> unique_constraint([:endpoint], name: :webhooks_endpoint_index)
+    |> unique_constraint([:event_type, :user_id], name: :webhooks_user_id_event_type_index)
     |> validate_required(@fields)
   end
 end

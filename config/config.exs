@@ -71,6 +71,17 @@ config :messaging_service_web, MessagingServiceWeb.Guardian,
   issuer: "messaging_service_web",
   secret_key: "mix guardian.gen.secret"
 
+config :kaffe,
+  producer: [
+    endpoints: [localhost: 9092],
+    topics: ["messaging_topic"]
+  ]
+
+config :messaging_service, Oban,
+  engine: Oban.Engines.Basic,
+  queues: [default: 10],
+  repo: MessagingService.Repo
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"
