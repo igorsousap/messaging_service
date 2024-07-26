@@ -18,6 +18,12 @@ defmodule MessagingServiceWeb.Router do
     plug MessagingServiceWeb.AuthPipeline
   end
 
+  scope "/api/echo", MessagingServiceWeb do
+    pipe_through [:api]
+
+    post "/", EchoController, :handle
+  end
+
   scope "/api/users", MessagingServiceWeb do
     pipe_through [:api]
 
