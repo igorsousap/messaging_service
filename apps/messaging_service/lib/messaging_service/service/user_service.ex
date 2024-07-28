@@ -33,11 +33,11 @@ defmodule MessagingService.Service.UserService do
   Get a user from a given id
   ## Examples
 
-      iex> get_user_by_id(%{email: "email.test@test.com",password: "Password@test123"})
+      iex> get_user_by_id("UUID")
       {:ok, %User{}}
 
-       iex> get_user_by_id(%{email: "invalid_email@test.com",password: "password@testinvalid"})
-      {:error, Ecto.Changeset.t()}
+       iex> get_user_by_id("Invalid_UUID")
+      {:error, :not_found}
 
   """
   @spec get_user_by_id(Binary_id.t()) :: User.t() | {:error, :not_found}
@@ -78,18 +78,18 @@ defmodule MessagingService.Service.UserService do
   end
 
   @doc """
-  Generate a new token for a user
+  Insert a new guardian token for a user
   ## Examples
 
-      iex> generate_token_user("user_id", "token")
+      iex> insert_token_user("user_id", "token")
       :ok
 
   """
-  @spec generate_token_user(Binary_id.t(), String.t()) :: :ok
-  def generate_token_user(user_id, token), do: Accounts.insert_user_session_token(user_id, token)
+  @spec insert_token_user(Binary_id.t(), String.t()) :: :ok
+  def insert_token_user(user_id, token), do: Accounts.insert_user_session_token(user_id, token)
 
   @doc """
-  Delete all previews token from a given user
+  Delete all previews token from a given user id
   ## Examples
 
       iex> delete_previews_token("user_id")

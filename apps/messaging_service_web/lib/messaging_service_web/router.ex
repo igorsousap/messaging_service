@@ -21,7 +21,8 @@ defmodule MessagingServiceWeb.Router do
   scope "/api/echo", MessagingServiceWeb do
     pipe_through [:api]
 
-    post "/", EchoController, :handle
+    post "/", EchoController, :echo
+    post "/error", EchoController, :echo_error
   end
 
   scope "/api/users", MessagingServiceWeb do

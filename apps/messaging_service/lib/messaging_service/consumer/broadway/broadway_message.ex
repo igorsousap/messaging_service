@@ -1,6 +1,7 @@
 defmodule MessagingService.Consumer.Broadway.BroadwayMessage do
   use Broadway
 
+  require Logger
   alias Broadway.Message
   alias MessagingService.Service.WebhookService
   alias MessagingService.Consumer.Broadway.ProcessMessage
@@ -54,12 +55,18 @@ defmodule MessagingService.Consumer.Broadway.BroadwayMessage do
 
   @impl true
   def handle_batch(:default, messages, _batch_info, _context) do
+    messages_count = length(messages)
+    Logger.info("Handling #{messages_count} messages")
     ProcessMessage.message(messages)
     messages
   end
 
-  defp update_message_endpoint(message, endpoint) do
-    endpoint = Map.fetch!(endpoint, :endpoint)
+  defp update_message_endpoint(message, webhook) do
+    %{endpoint: endpoint} = webhook
+    %{metadata: %{ts: ts}, data: data} = message
+    time_spent_kafka = DateTime.to_unix(DateTime.utc_now(), :millisecond) - ts
+
+    Logger.info("Message from #{data["user_id"]} took #{time_spent_kafka} ms on kafka")
 
     message_update =
       message

@@ -25,7 +25,7 @@ defmodule MessagingService.Service.WebhookService do
 
       error ->
         Logger.error(
-          "Could not create webhook with attributes #{inspect(params)}. Error: #{inspect(error)}"
+          "Service: Could not create webhook with attributes #{inspect(params)}. Error: #{inspect(error)}"
         )
 
         error
@@ -33,18 +33,18 @@ defmodule MessagingService.Service.WebhookService do
   end
 
   @doc """
-  Return a webhook from a given user_id
+  Return a webhooks paginated from a given user_id
   ## Examples
 
       iex> get_webhook_from_user("user_id", "page", "page_size")})
-       {:ok, %Webhook{}}
+       {:ok, map()}
 
 
       iex> get_webhook_from_user("invalid_user_id", "page", "page_size")})
        {:error, :not_found}
   """
   @spec get_webhook_from_user(Binary_id.t(), String.t(), String.t()) ::
-          {:ok, %Webhook{}} | {:error, :not_found}
+          {:ok, map()} | {:error, :not_found}
   def get_webhook_from_user(user_id, page, page_size) do
     page = String.to_integer(page)
     page_size = String.to_integer(page_size)
@@ -76,12 +76,12 @@ defmodule MessagingService.Service.WebhookService do
   def get_webhook_from_user_id_event_type(user_id, event_type) do
     case Webhooks.get_webhook_by_user_id_event_type(user_id, event_type) do
       nil ->
-        Logger.error("Webhooks from user: #{user_id} not found")
+        Logger.error("Endpoint from user: #{user_id} not found")
         {:error, :not_found}
 
-      webhook ->
-        Logger.info("Requested webhook from user: #{user_id}")
-        {:ok, webhook}
+      endpoint ->
+        Logger.info("Requested endpoint from user: #{user_id}")
+        {:ok, endpoint}
     end
   end
 
@@ -99,14 +99,14 @@ defmodule MessagingService.Service.WebhookService do
   @spec update_webhook_endpoint(Binary_id.t(), String.t()) ::
           {:ok, Webhook.t()} | {:error, Ecto.Changeset.t()}
   def update_webhook_endpoint(user_id, endpoint) do
-    case Webhooks.update(user_id, %{endpoint: endpoint}) do
+    case Webhooks.update_endpoint(user_id, %{endpoint: endpoint}) do
       {:ok, webhook} ->
         Logger.info("Updated webhook #{webhook.id} to a new endpoint #{endpoint}")
         {:ok, webhook}
 
       error ->
         Logger.error(
-          "Could not create webhook with attributes #{endpoint}. Error: #{inspect(error)}"
+          "Service: Could not create webhook with attributes #{endpoint}. Error: #{inspect(error)}"
         )
 
         error

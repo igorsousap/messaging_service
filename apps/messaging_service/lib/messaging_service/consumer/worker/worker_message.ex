@@ -15,22 +15,28 @@ defmodule MessagingService.Consumer.Worker.WorkerMessage do
   @spec perform(Oban.Job.t()) ::
           {:error, :no_scheme | :not_send | :nxdomain} | {:ok, :success_send}
   @impl Oban.Worker
-  def perform(%Oban.Job{
-        args:
-          %{
-            "user_id" => user_id,
-            "endpoint" => endpoint,
-            "event_type" => event_type
-          } = data,
-        attempt: attempt
-      }) do
+  def perform(
+        %Oban.Job{
+          args:
+            %{
+              "user_id" => user_id,
+              "endpoint" => endpoint,
+              "event_type" => event_type
+            } = data,
+          attempt: attempt
+        } = job
+      ) do
     Logger.info(
       "Trying send message to #{endpoint}, from client: #{user_id} and event #{event_type} at attempt #{attempt}"
     )
 
     with {:ok, %Tesla.Env{status: 200}} <- EndpointMessage.send_webhook(data, endpoint) do
+      time_spent_oban =
+        DateTime.to_unix(DateTime.utc_now(), :millisecond) -
+          DateTime.to_unix(job.inserted_at, :millisecond)
+
       Logger.info(
-        "Success send message to #{endpoint}, from client: #{user_id} and event #{event_type}, at attempt: #{attempt}"
+        "Success send message to #{endpoint}, from client: #{user_id} and event #{event_type}, at attempt: #{attempt} with #{time_spent_oban} ms"
       )
 
       {:ok, :success_send}
