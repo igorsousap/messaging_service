@@ -42,6 +42,27 @@ defmodule Persistence.Webhooks.Webhook do
     endpoint
     |> cast(params, @fields)
     |> unique_constraint([:endpoint], name: :webhooks_endpoint_index)
+    |> unique_constraint([:event_type, :user_id], name: :webhooks_user_id_event_type_index)
     |> validate_required(@fields)
+  end
+
+  @doc """
+  Create chagenset for endpoint
+  ## Examples
+      iex> Persistence.Persistence.Webhooks.Webhook.cahngeset(
+        %{
+          event_type: "send.message.converter",
+          endpoint: "https://webhook.site/68d090b2-e5ad-40d3-a990-b3dc45dcf17c/updated"
+          user_id: "user_id"
+        })
+
+  """
+
+  @spec changeset_endpoint(:__MODULE__.t(), map()) :: Ecto.Changeset.t()
+  def changeset_endpoint(endpoint \\ %__MODULE__{}, params) do
+    endpoint
+    |> cast(params, [:endpoint])
+    |> unique_constraint(:endpoint, name: :webhooks_endpoint_index)
+    |> validate_confirmation(:endpoint, message: "does not match endpoint")
   end
 end

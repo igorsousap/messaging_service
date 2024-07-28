@@ -43,7 +43,12 @@ defmodule MessagingService.MixProject do
       {:postgrex, ">= 0.0.0"},
       {:jason, "~> 1.2"},
       {:swoosh, "~> 1.5"},
-      {:finch, "~> 0.13"}
+      {:finch, "~> 0.13"},
+      {:broadway, "~> 1.0"},
+      {:kaffe, "~> 1.0"},
+      {:broadway_kafka, "~> 0.4.1"},
+      {:oban, "~> 2.17"},
+      {:tesla, "~> 1.11"}
     ]
   end
 
