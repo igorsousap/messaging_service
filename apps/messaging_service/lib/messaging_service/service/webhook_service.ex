@@ -33,7 +33,7 @@ defmodule MessagingService.Service.WebhookService do
   end
 
   @doc """
-  Return a webhooks paginated from a given user_id
+  Return webhooks paginated from a given user_id
   ## Examples
 
       iex> get_webhook_from_user("user_id", "page", "page_size")})
