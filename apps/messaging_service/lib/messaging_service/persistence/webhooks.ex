@@ -67,7 +67,6 @@ defmodule MessagingService.Persistence.Webhooks do
     Webhook
     |> from()
     |> where([w], w.user_id == ^user_id and w.event_type == ^event_type)
-    |> select([w], %{endpoint: w.endpoint})
     |> Repo.one()
   end
 
@@ -78,10 +77,10 @@ defmodule MessagingService.Persistence.Webhooks do
       iex> update_endpoint("user_id", %{endpoint: "https://webhook.endpoint.new"})
 
   """
-  @spec update_endpoint(Webhook.t(), map()) :: {:ok, Webhook.t()} | {:error, Ecto.Changeset.t()}
-  def update_endpoint(id, attrs) do
-    Webhook
-    |> Repo.get(id)
+  @spec update_endpoint(Binary_id.t(), String.t(), map()) ::
+          {:ok, Webhook.t()} | {:error, Ecto.Changeset.t()}
+  def update_endpoint(user_id, event_type, attrs) do
+    get_webhook_by_user_id_event_type(user_id, event_type)
     |> Webhook.changeset_endpoint(attrs)
     |> Repo.update()
   end

@@ -62,7 +62,11 @@ defmodule Persistence.Webhooks.Webhook do
   def changeset_endpoint(endpoint \\ %__MODULE__{}, params) do
     endpoint
     |> cast(params, [:endpoint])
+    |> validate_required([:endpoint])
     |> unique_constraint(:endpoint, name: :webhooks_endpoint_index)
-    |> validate_confirmation(:endpoint, message: "does not match endpoint")
+    |> case do
+      %{changes: %{endpoint: _}} = changeset -> changeset
+      %{} = changeset -> add_error(changeset, :endpoint, "must be a endpoint key to be updated")
+    end
   end
 end

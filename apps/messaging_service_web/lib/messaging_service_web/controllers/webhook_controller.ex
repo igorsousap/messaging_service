@@ -60,7 +60,11 @@ defmodule MessagingServiceWeb.WebhookController do
 
     with {:ok, :authorized} <- UserService.validate_token(token),
          {:ok, webhook} <-
-           WebhookService.update_webhook_endpoint(params["id"], params["endpoint"]) do
+           WebhookService.update_webhook_endpoint(
+             params["id"],
+             params["event_type"],
+             params["endpoint"]
+           ) do
       conn
       |> put_status(:ok)
       |> render(:webhook, loyalt: false, webhook: webhook, status: :updated)

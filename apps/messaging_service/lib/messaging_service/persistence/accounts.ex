@@ -59,25 +59,14 @@ defmodule MessagingService.Persistence.Accounts do
       ** (Ecto.NoResultsError)
 
   """
-  def get_user!(id), do: Repo.get(User, id)
+  def get_user!(id) do
+    case Ecto.UUID.cast(id) do
+      {:ok, id} -> Repo.get(User, id)
+      :error -> nil
+    end
+  end
 
   ## Database getters
-
-  @doc """
-  Gets a all users
-
-  ## Examples
-
-      iex> list_users()
-      [%User{}]
-
-      iex> list_users()
-      ][]
-
-  """
-  def list_users do
-    Repo.all(User)
-  end
 
   ## User registration
 
@@ -232,7 +221,7 @@ defmodule MessagingService.Persistence.Accounts do
   insert a session token.
   """
   def insert_user_session_token(user_id, token) do
-    {_token, user_token} = UserToken.insert_session_token(user_id, token)
+    {_token, user_token} = UserToken.build_insert_session_token(user_id, token)
     Repo.insert!(user_token)
     :ok
   end
@@ -330,7 +319,7 @@ defmodule MessagingService.Persistence.Accounts do
       nil
 
       iex> validate_token_user("valid_token")
-     %UserToken{}
+     %User{}
 
   """
   def validate_token_user(token) do

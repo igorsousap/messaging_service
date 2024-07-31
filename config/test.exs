@@ -12,6 +12,8 @@ config :messaging_service, MessagingService.Repo,
   username: "postgres",
   password: "postgres",
   hostname: "localhost",
+  stacktrace: true,
+  show_sensitive_data_on_connection_error: true,
   database: "messaging_service_test#{System.get_env("MIX_TEST_PARTITION")}",
   pool: Ecto.Adapters.SQL.Sandbox,
   pool_size: System.schedulers_online() * 2
@@ -40,3 +42,8 @@ config :messaging_service, Oban, testing: :inline
 config :phoenix_live_view,
   # Enable helpful, but potentially expensive runtime checks
   enable_expensive_runtime_checks: true
+
+config :messaging_service,
+  producer_module: Broadway.DummyProducer
+
+config :tesla, adapter: Tesla.Mock
