@@ -40,7 +40,7 @@ defmodule MessagingService.Service.UserService do
       {:error, :not_found}
 
   """
-  @spec get_user_by_id(Binary_id.t()) :: User.t() | {:error, :not_found}
+  @spec get_user_by_id(Binary_id.t()) :: {:ok, User.t()} | {:error, :not_found}
   def get_user_by_id(user_id) do
     case Accounts.get_user!(user_id) do
       nil ->
@@ -115,8 +115,13 @@ defmodule MessagingService.Service.UserService do
           {:ok, User.t()} | {:error, :invalid_credentials}
   def authenticate_user(email, password) do
     case Accounts.get_user_by_email_and_password(email, password) do
-      nil -> {:error, :invalid_credentials}
-      user -> {:ok, user}
+      nil ->
+        Logger.error("User tried to authenticated and get denied with #{email}")
+        {:error, :invalid_credentials}
+
+      user ->
+        Logger.info("User #{email} was been authenticated in #{DateTime.utc_now()}")
+        {:ok, user}
     end
   end
 

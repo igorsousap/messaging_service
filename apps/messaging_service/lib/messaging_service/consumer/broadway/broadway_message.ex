@@ -15,12 +15,9 @@ defmodule MessagingService.Consumer.Broadway.BroadwayMessage do
            [
              hosts: [localhost: 9092],
              group_id: "group_1",
-             topics: ["messaging_topic", "messege_topic"],
+             topics: ["messaging_topic"],
              offset_reset_policy: :earliest,
-             reconnect_timeout: 10_000,
-             fetch_max_bytes: 1_048_576,
-             fetch_min_bytes: 1,
-             fetch_wait_max_ms: 100
+             reconnect_timeout: 10_000
            ]},
         concurrency: 1
       ],

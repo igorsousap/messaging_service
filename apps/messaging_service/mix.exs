@@ -23,7 +23,13 @@ defmodule MessagingService.MixProject do
   def application do
     [
       mod: {MessagingService.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [
+        :logger,
+        :runtime_tools,
+        :prometheus_ex,
+        :prometheus_ecto,
+        :prometheus_plugs
+      ]
     ]
   end
 
@@ -48,7 +54,12 @@ defmodule MessagingService.MixProject do
       {:kaffe, "~> 1.0"},
       {:broadway_kafka, "~> 0.4.1"},
       {:oban, "~> 2.17"},
-      {:tesla, "~> 1.11"}
+      {:tesla, "~> 1.11"},
+      {:ex_machina, "~> 2.7.0", only: :test},
+      # Observabilidade
+      {:prometheus_ex, "~> 3.1"},
+      {:prometheus_ecto, "~> 1.4.3"},
+      {:prometheus_plugs, "~> 1.1.1"}
     ]
   end
 

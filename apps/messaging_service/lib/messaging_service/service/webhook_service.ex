@@ -72,7 +72,7 @@ defmodule MessagingService.Service.WebhookService do
        {:error, :not_found}
   """
   @spec get_webhook_from_user_id_event_type(Binary_id.t(), String.t()) ::
-          {:ok, %Webhook{}} | {:error, :not_found}
+          {:ok, map()} | {:error, :not_found}
   def get_webhook_from_user_id_event_type(user_id, event_type) do
     case Webhooks.get_webhook_by_user_id_event_type(user_id, event_type) do
       nil ->
@@ -96,10 +96,10 @@ defmodule MessagingService.Service.WebhookService do
       iex> update_webhook_endpoint("invalid_user_id",  endpoint))
        {:error, Ecto.Changeset.t(
   """
-  @spec update_webhook_endpoint(Binary_id.t(), String.t()) ::
+  @spec update_webhook_endpoint(Binary_id.t(), String.t(), String.t()) ::
           {:ok, Webhook.t()} | {:error, Ecto.Changeset.t()}
-  def update_webhook_endpoint(user_id, endpoint) do
-    case Webhooks.update_endpoint(user_id, %{endpoint: endpoint}) do
+  def update_webhook_endpoint(user_id, event_type, endpoint) do
+    case Webhooks.update_endpoint(user_id, event_type, %{endpoint: endpoint}) do
       {:ok, webhook} ->
         Logger.info("Updated webhook #{webhook.id} to a new endpoint #{endpoint}")
         {:ok, webhook}
