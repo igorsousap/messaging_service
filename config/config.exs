@@ -9,6 +9,19 @@
 # move said applications out of the umbrella.
 import Config
 
+config :messaging_service_web, MessagingServiceWeb.PromEx,
+  disabled: false,
+  manual_metrics_start_delay: :no_delay,
+  drop_metrics_groups: [],
+  grafana: [
+    host: "http://localhost:3000",
+    # Authenticate via Basic Auth
+    username: "admin",
+    password: "admin",
+    upload_dashboards_on_start: true
+  ],
+  metrics_server: :disabled
+
 # Configure Mix tasks and generators
 config :messaging_service,
   ecto_repos: [MessagingService.Repo]
@@ -80,8 +93,7 @@ config :kaffe,
 config :messaging_service, Oban,
   engine: Oban.Engines.Basic,
   queues: [default: 10],
-  repo: MessagingService.Repo,
-  testing: :inline
+  repo: MessagingService.Repo
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
