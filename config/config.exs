@@ -13,6 +13,7 @@ config :messaging_service_web, MessagingServiceWeb.PromEx,
   disabled: false,
   manual_metrics_start_delay: :no_delay,
   drop_metrics_groups: [],
+  ecto_repos: [MessagingService.Repo],
   grafana: [
     host: "http://localhost:3000",
     # Authenticate via Basic Auth

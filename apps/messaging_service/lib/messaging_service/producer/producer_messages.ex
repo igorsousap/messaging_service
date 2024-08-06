@@ -7,7 +7,7 @@ defmodule MessagingService.Producer.ProducerMessages do
   ## Examples
 
       iex> producer_message_kafka("event_type", "user_id", "message_topic", qtd_messages: integer)
-      MessagingService.Producer.ProducerMessages.producer_message_kafka("test_event_echo", "f1dd7282-5235-4997-b0cd-c7a26efe4b16", "messaging_topic", 1000)
+      MessagingService.Producer.ProducerMessages.producer_message_kafka("test_event_echo", "f1dd7282-5235-4997-b0cd-c7a26efe4b16", "messaging_topic", 1)
   """
   @spec producer_message_kafka(String.t(), Binary_id.t(), String.t(), Integer.t()) ::
           {:ok, :messages_send}
