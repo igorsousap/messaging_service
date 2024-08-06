@@ -8,6 +8,7 @@ defmodule MessagingServiceWeb.Application do
   @impl true
   def start(_type, _args) do
     children = [
+      MessagingServiceWeb.PromEx,
       MessagingServiceWeb.Telemetry,
       # Start a worker by calling: MessagingServiceWeb.Worker.start_link(arg)
       # {MessagingServiceWeb.Worker, arg},

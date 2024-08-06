@@ -4,7 +4,7 @@ services:
   db:
     image: postgres:latest
     environment:
-      - POSTGRES_DATABASE=messaging_service_dev
+      - POSTGRES_DATABASE=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     volumes:
@@ -57,3 +57,28 @@ services:
       - KAFKA_CLUSTERS_0_NAME=local
       - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:29092
       - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - 9090:9090
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    user: "472"
+    ports:
+      - 3000:3000
+    volumes:
+      - ./data/grafana/data:/var/lib/grafana/data
+    depends_on:
+      - prometheus
+
+volumes:
+  pgdata:
+    driver: local
