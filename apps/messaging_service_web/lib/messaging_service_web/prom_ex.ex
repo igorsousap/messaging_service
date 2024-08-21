@@ -64,11 +64,11 @@ defmodule MessagingServiceWeb.PromEx do
       Plugins.Beam,
       {Plugins.Phoenix,
        router: MessagingServiceWebWeb.Router, endpoint: MessagingServiceWebWeb.Endpoint},
-      {Plugins.Ecto, otp_app: :messaging_service_web, repos: [MessagingService.Repo]},
-      {Plugins.Oban, otp_app: :messaging_service_web, repos: [MessagingService.Repo]},
+      {Plugins.Ecto, router: MessagingService, repos: [MessagingService.Repo]},
+      {Plugins.Oban, router: MessagingService.Consumer.Worker, repos: [MessagingService.Repo]},
       # Plugins.PhoenixLiveView,
       # Plugins.Absinthe,
-      {Plugins.Broadway, otp_app: :messaging_service_web}
+      Plugins.Broadway
 
       # Add your own PromEx metrics plugins
       # MessagingServiceWeb.Users.PromExPlugin
@@ -78,7 +78,7 @@ defmodule MessagingServiceWeb.PromEx do
   @impl true
   def dashboard_assigns do
     [
-      datasource_id: "adtxom0m2x1j4f",
+      datasource_id: "bdu53zb1zd1j4d",
       default_selected_interval: "30s"
     ]
   end
@@ -88,10 +88,10 @@ defmodule MessagingServiceWeb.PromEx do
     [
       # PromEx built in Grafana dashboards
       {:prom_ex, "application.json"},
-      {:prom_ex, "beam.json"},
-      {:prom_ex, "phoenix.json"},
-      {:prom_ex, "ecto.json", otp_app: :messaging_service_web, title: "Ecto Messaging"},
-      {:prom_ex, "oban.json", otp_app: :messaging_service_web, title: "Oban Messaging"},
+      {:prom_ex, "beam.json", title: "Beam Messaging"},
+      {:prom_ex, "phoenix.json", title: "Phoenix Messaging"},
+      {:prom_ex, "ecto.json", title: "Ecto Messaging"},
+      {:prom_ex, "oban.json", title: "Oban Messaging"},
       # {:prom_ex, "phoenix_live_view.json"},
       # {:prom_ex, "absinthe.json"},
       {:prom_ex, "broadway.json", title: "Broadway Messaging"}

@@ -58,6 +58,11 @@ defmodule MessagingService.Consumer.Broadway.BroadwayMessage do
     messages
   end
 
+  @impl true
+  def handle_failed(messages, _context) do
+    messages
+  end
+
   defp update_message_endpoint(message, webhook) do
     %{endpoint: endpoint} = webhook
     %{metadata: %{ts: ts}, data: data} = message

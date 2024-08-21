@@ -25,7 +25,7 @@ defmodule MessagingService.Service.WebhookService do
 
       error ->
         Logger.error(
-          "Service: Could not create webhook with attributes #{inspect(params)}. Error: #{inspect(error)}"
+          "Could not create webhook with attributes #{inspect(params)}. Error: #{inspect(error)}"
         )
 
         error
@@ -106,7 +106,7 @@ defmodule MessagingService.Service.WebhookService do
 
       error ->
         Logger.error(
-          "Service: Could not create webhook with attributes #{endpoint}. Error: #{inspect(error)}"
+          "Could not update webhook with attributes #{endpoint}. Error: #{inspect(error)}"
         )
 
         error
