@@ -8,13 +8,14 @@ defmodule MessagingService.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      MessagingService.Repo,
+      MessagingServiceWeb.PromEx,
       {DNSCluster, query: Application.get_env(:messaging_service, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: MessagingService.PubSub},
       # Start the Finch HTTP client for sending emails
       {Finch, name: MessagingService.Finch},
       # Start a worker by calling: MessagingService.Worker.start_link(arg)
       # {MessagingService.Worker, arg}
+      MessagingService.Repo,
       {MessagingService.Consumer.Broadway.BroadwayMessage, []},
       {Oban, Application.fetch_env!(:messaging_service, Oban)}
     ]

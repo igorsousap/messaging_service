@@ -1,7 +1,4 @@
 defmodule Persistence.Webhooks.Webhook do
-  @moduledoc """
-  Ecto changeset for validation the struct to be sabed and query for get and update
-  """
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -25,15 +22,22 @@ defmodule Persistence.Webhooks.Webhook do
     timestamps()
   end
 
+  @moduledoc """
+   A webhook changeset for registration.
+   Takes a unique url and event to a user
+  """
+
   @doc """
-  Create chagenset
+  Create changeset
   ## Examples
-      iex> Persistence.Persistence.Webhooks.Webhook.cahngeset(
+      iex> Persistence.Persistence.Webhooks.Webhook.changeset(
         %{
           event_type: "send.message.converter",
-          endpoint: "https://webhook.site/68d090b2-e5ad-40d3-a990-b3dc45dcf17c/updated"
+          endpoint: "localhost:4000/new"
           user_id: "user_id"
         })
+
+
 
   """
 
@@ -47,12 +51,14 @@ defmodule Persistence.Webhooks.Webhook do
   end
 
   @doc """
-  Create chagenset for endpoint
+  A webhook changeset for changing the endpoint.
+
+  It requires the endpoint to change otherwise an error is added.
   ## Examples
-      iex> Persistence.Persistence.Webhooks.Webhook.cahngeset(
+      iex> Persistence.Persistence.Webhooks.Webhook.changeset(
         %{
           event_type: "send.message.converter",
-          endpoint: "https://webhook.site/68d090b2-e5ad-40d3-a990-b3dc45dcf17c/updated"
+          endpoint: "localhost:4000/updated"
           user_id: "user_id"
         })
 

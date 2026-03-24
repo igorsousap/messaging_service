@@ -12,10 +12,8 @@ defmodule MessagingServiceWeb.WebhookController do
   plug :put_view, json: MessagingServiceWeb.WebhookJson
 
   def create(conn, params) do
-    %User{id: id} = conn.private[:guardian_default_resource]
-    token = conn.private[:guardian_default_token]
-
-    with {:ok, :authorized} <- UserService.validate_token(token),
+    with %User{id: id} <- user_id_identification(conn),
+         {:ok, :authorized} <- authorization(conn),
          {:ok, webhook} <-
            WebhookService.create_webhook(%{
              event_type: params["event_type"],
@@ -25,56 +23,41 @@ defmodule MessagingServiceWeb.WebhookController do
       conn
       |> put_status(:created)
       |> render(:webhook, loyalt: false, webhook: webhook, status: :created)
-    else
-      error ->
-        Logger.error(
-          "Could not create webhook with attributes #{inspect(params)}. Error: #{inspect(error)}"
-        )
-
-        error
     end
   end
 
   def get_webhooks(conn, params) do
-    %User{id: id} = conn.private[:guardian_default_resource]
-    token = conn.private[:guardian_default_token]
-
-    with {:ok, :authorized} <- UserService.validate_token(token),
+    with %User{id: id} <- user_id_identification(conn),
+         {:ok, :authorized} <- authorization(conn),
          {:ok, webhook} <-
            WebhookService.get_webhook_from_user(id, params["page"], params["page_size"]) do
       conn
       |> put_status(:ok)
       |> render(:webhook_list, loyalt: false, webhook: webhook)
-    else
-      error ->
-        Logger.error(
-          "Could not get webhook with attributes #{inspect(params)}. Error: #{inspect(error)}"
-        )
-
-        error
     end
   end
 
   def update_webhooks(conn, params) do
-    token = conn.private[:guardian_default_token]
-
-    with {:ok, :authorized} <- UserService.validate_token(token),
+    with %User{id: id} <- user_id_identification(conn),
+         {:ok, :authorized} <- authorization(conn),
          {:ok, webhook} <-
            WebhookService.update_webhook_endpoint(
-             params["id"],
+             id,
              params["event_type"],
              params["endpoint"]
            ) do
       conn
       |> put_status(:ok)
       |> render(:webhook, loyalt: false, webhook: webhook, status: :updated)
-    else
-      error ->
-        Logger.error(
-          "Could not update webhook with attributes #{inspect(params)}. Error: #{inspect(error)}"
-        )
-
-        error
     end
+  end
+
+  defp authorization(conn) do
+    token = conn.private[:guardian_default_token]
+    UserService.validate_token(token)
+  end
+
+  defp user_id_identification(conn) do
+    conn.private[:guardian_default_resource]
   end
 end

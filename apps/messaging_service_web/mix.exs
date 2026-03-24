@@ -23,7 +23,7 @@ defmodule MessagingServiceWeb.MixProject do
   def application do
     [
       mod: {MessagingServiceWeb.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :messaging_service]
     ]
   end
 
@@ -52,13 +52,14 @@ defmodule MessagingServiceWeb.MixProject do
        app: false,
        compile: false,
        depth: 1},
-      {:telemetry_metrics, "~> 1.0"},
+      {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 1.0"},
       {:gettext, "~> 0.20"},
       {:messaging_service, in_umbrella: true},
       {:jason, "~> 1.2"},
       {:bandit, "~> 1.2"},
-      {:guardian, "~> 2.0"}
+      {:guardian, "~> 2.0"},
+      {:prom_ex, "~> 1.9.0"}
     ]
   end
 

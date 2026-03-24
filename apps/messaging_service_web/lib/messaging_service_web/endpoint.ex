@@ -11,6 +11,8 @@ defmodule MessagingServiceWeb.Endpoint do
     same_site: "Lax"
   ]
 
+  plug PromEx.Plug, prom_ex_module: MessagingServiceWeb.PromEx
+
   socket "/live", Phoenix.LiveView.Socket,
     websocket: [connect_info: [session: @session_options]],
     longpoll: [connect_info: [session: @session_options]]

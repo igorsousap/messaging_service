@@ -221,7 +221,7 @@ defmodule MessagingService.Persistence.Accounts do
   insert a session token.
   """
   def insert_user_session_token(user_id, token) do
-    {_token, user_token} = UserToken.build_insert_session_token(user_id, token)
+    {_token, user_token} = UserToken.insert_session_token(user_id, token)
     Repo.insert!(user_token)
     :ok
   end

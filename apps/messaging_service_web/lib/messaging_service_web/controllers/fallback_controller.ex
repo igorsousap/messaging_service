@@ -45,13 +45,13 @@ defmodule MessagingServiceWeb.FallbackController do
     |> render(:error, layout: false, reason: "Not Found")
   end
 
-  def call(conn, {:error, :unauthorized}) do
+  def call(conn, {:error, :unathourazed}) do
     Logger.error("Error invalid access")
 
     conn
     |> put_status(:unauthorized)
     |> put_view(json: MessagingServiceWeb.ErrorJson)
-    |> render(:error, layout: false, reason: "unauthorized")
+    |> render(:error, layout: false, reason: "unathourazed")
   end
 
   def call(conn, error) do

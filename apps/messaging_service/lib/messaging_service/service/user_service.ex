@@ -136,10 +136,10 @@ defmodule MessagingService.Service.UserService do
        {:error, :invalid_credentials}
   """
   @spec validate_token(String.t()) ::
-          {:ok, :authorized} | {:error, :unathourazed}
+          {:ok, :authorized} | {:error, :unauthorized}
   def validate_token(token) do
     case Accounts.validate_token_user(token) do
-      nil -> {:error, :unathourazed}
+      nil -> {:error, :unauthorized}
       _user_token -> {:ok, :authorized}
     end
   end
